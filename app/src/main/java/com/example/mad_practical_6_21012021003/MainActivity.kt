@@ -14,80 +14,29 @@ import kotlinx.coroutines.NonCancellable.start
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var player: MediaPlayer
-
-    private lateinit var binding: ActivityMainBinding
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-
-        var count:Int=0
-        fun play(){
-            Intent(applicationContext,MyService::class.java).putExtra(MyService.DATA_KEY,MyService.DATA_VALUE).apply { startService(this) }
+        val buttonPlay: FloatingActionButton = findViewById(R.id.playbtn)
+        buttonPlay.setOnClickListener {
+            playPause()
         }
 
-        fun stop() {
-            Intent(applicationContext, MyService::class.java).apply { stopService(this) }
-        }
-
-        binding.btnShuffle.setOnClickListener{
+        val buttonStop: FloatingActionButton = findViewById(R.id.stop_btn)
+        buttonStop.setOnClickListener {
             stop()
-            play()
         }
+    }
 
-        binding.btnPrevious.setOnClickListener{
-            stop()
-            play()
-        }
 
-        binding.btnPlay.setOnClickListener{
 
-//            if (!this::player.isInitialized){
-//                player=MediaPlayer.create(this,R.raw.song)
-//            }
-//            if(player.isPlaying){
-//                player.pause()
-//                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
-//
-//            }
-//            else{
-//                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_pause_24))
-//                player.start()
-//            }
-            if(count%2==0){
-                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_pause_24))
-                count++
-            }
+    fun playPause(){
+        Intent(applicationContext, MyService::class.java).putExtra(MyService.PLAYERKEY, MyService.PLAYERVALUE).apply { startService(this) }
+    }
+    fun stop(){
+        Intent(applicationContext, MyService::class.java).putExtra(MyService.PLAYERKEY, MyService.PLAYERVALUE).apply { stopService(this) }
 
-            else{
-                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
-                count++
-            }
-
-            play()
-        }
-
-        binding.btnNext.setOnClickListener{
-            stop()
-            play()
-        }
-
-        binding.btnStop.setOnClickListener{
-//            if (!this::player.isInitialized){
-//                player=MediaPlayer.create(this,R.raw.song)
-//            }
-//            player.pause()
-//            binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
-
-            binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
-            stop()
-            count++
-        }
     }
 }
